@@ -1,0 +1,18 @@
+{% load wagtailcore_tags %}
+<div>
+    <h2>{{ self.heading }}</h2>
+    <h3>{{ self.sub_heading }}</h3>
+    
+
+    <div class="grid">
+        {% for page in self.subject_block %}
+            <div class="card">
+                
+                    {% image page.image width-480 %}
+                {% endif %}
+                <p><a href="">{{ page.heading }}</a></p>
+                <p>{{ page.specific.date }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
