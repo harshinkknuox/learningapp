@@ -12,3 +12,19 @@ CARD_CHOICES = [
 # PAGE_TARGETS = [
 #                     'course.CoursePage',
 #                 ]
+
+NEARBY_LOCATIONS = [
+    ('Dubai', 'Dubai'),
+    ('Abu Dhabi', 'Abu Dhabi'),
+    ('Sharjah', 'Sharjah'),
+]
+
+COMMUNITIES = [
+    ('Dubaic', 'Dubaic'),
+    ('Abu Dhabic', 'Abu Dhabic'),
+]
+
+DEVELOPERS = [
+    ('DubaiDev', 'DubaiDev'),
+    ('Abu Dhabidev', 'Abu Dhabidev'),
+]

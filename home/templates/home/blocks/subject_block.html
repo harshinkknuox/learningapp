@@ -4,14 +4,20 @@
     <h3>{{ self.sub_heading }}</h3>
     
 
-    <div class="grid">
+    <div class="row">
         {% for page in self.subject_block %}
-            <div class="card">
-                {% if page.image %}
-                    {% image page.image width-480 %}
-                {% endif %}
-                <p><a href="">{{ page.heading }}</a></p>
-                <p>{{ page.specific.date }}</p>
+            <div class="col-lg-6 mb-4"> <!-- Use col-lg-6 to make each card take up half the row -->
+                <div class="card h-100">
+                    {% if page.image %}
+                        <div class="card-img-top">
+                            {% image page.image width-480 %}
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <p><a href="">{{ page.heading }}</a></p>
+                        <p>{{ page.specific.date }}</p>
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>
