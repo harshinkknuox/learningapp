@@ -537,28 +537,31 @@ class ProjectsDetailSerializer(ProjectsPageSerializer):
             print("------block.block_type------",block.block_type)
             if block.block_type == 'text_block':
                 serializer = TextBlockSerializer(block.value, context=self.context)
-                datas =  serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'about_block':
                 serializer = AboutSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'photo_gallery_block':
                 serializer = ImageBlockSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'card_block_with_link':
                 serializer = CardWithLinkSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'text_card_block':
                 serializer = TextCardSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'faq_block':
                 serializer = FAQBlockSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'location_block':
                 serializer = LocationBlockSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'amenities_block':
                 serializer = AmenitiesBlockSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
             elif block.block_type == 'floor_plan_block':
                 serializer = FloorPlanBlockSerializer(block.value,context=self.context)
-                datas = serializer.data
+                content_blocks.append(serializer.data)
+        return content_blocks
+
+        

@@ -28,7 +28,6 @@ class ProjectsPagesViewSet(viewsets.ModelViewSet):
         
         if serializer_class is None:
             raise ValueError(f"No serializer found for action: {self.action}")
-        
         return serializer_class
         
     def get_queryset(self):
@@ -36,6 +35,7 @@ class ProjectsPagesViewSet(viewsets.ModelViewSet):
         lang = get_language_from_request(self.request)
         # Get the locale object or raise a 404 error if not found
         locale = get_object_or_404(Locale, language_code=lang)
+        
         # Return the filtered queryset
         return ProjectsPage.objects.live().exact_type(ProjectsPage).filter(locale=locale)
 
@@ -81,13 +81,13 @@ class ProjectsPagesViewSet(viewsets.ModelViewSet):
             lang = get_language_from_request(request)
             locale = get_object_or_404(Locale, language_code=lang)
             
-            # Create a queryset for BlogPage filtered by locale and live pages
+            # Create a queryset for ProjectPAge filtered by locale and live pages
             queryset = ProjectsPage.objects.live().filter(locale=locale)
             
-            # Fetch the specific BlogPage using slug, raising a 404 if not found
+            # Fetch the specific ProjectPAge using slug, raising a 404 if not found
             projects_page = get_object_or_404(queryset, slug=slug)
             
-            # Serialize the retrieved BlogPage
+            # Serialize the retrieved ProjectPAge
             serializer = self.get_serializer(projects_page)
             print("==--queryset-serializer--==",serializer.data)
             # Prepare the response data
