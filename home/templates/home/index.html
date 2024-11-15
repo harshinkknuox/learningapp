@@ -7,7 +7,37 @@
 <!-- replace everything below with: -->
 {% block content %}
     <div>
-        <h3>Learning</h3>
+        <h3>Learning-</h3>
     </div>
     {{ page.body }}
+
+
+    <h2>Latest Projects</h2>
+    <ul class="d-flex ">
+        {% for project in page.get_projects %}
+            <li class="card proj-card">
+                <h3><a href="{{ project.url }}">{{ project.project_name }}</a></h3>
+                <p>{{ project.project_description|richtext }}</p>  <!-- Display a snippet of the body -->
+                    {% if project.project_image %}
+                            <div class="card-img-top">
+                                {% image project.project_image width-480 class="proj-image" %}
+                            </div>
+                    {% endif %}
+            </li>
+        {% empty %}
+            <li>No Project available.</li>
+        {% endfor %}
+    </ul>
+
+
+
+
+
+
+
+
+
+
 {% endblock %}
+
+

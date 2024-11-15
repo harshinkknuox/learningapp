@@ -7,6 +7,7 @@ from django.utils.translation import get_language_from_request
 from django.core.paginator import Paginator
 
 from .models import ProjectsPage
+from django.db.models import Q
 from .serializers import ProjectsPageSerializer,ProjectsDetailSerializer
 from learningapp.constants import PAGINATION_PERPAGE
 
@@ -46,7 +47,18 @@ class ProjectsPagesViewSet(viewsets.ModelViewSet):
         try:
             limit = int(request.GET.get('limit', PAGINATION_PERPAGE))  # Ensure limit is an integer
             page = int(request.GET.get('page', 1))  # Ensure page is an integer
-            querysets = self.get_queryset()  
+            search_term = request.GET.get('search_term', None)
+            project_name = request.GET.get('project_name', None) # To get project name
+            communities = request.GET.get('communities', None) # To get communities name
+            querysets = self.get_queryset()
+              
+            if project_name:
+                querysets = querysets.filter(project_name__icontains=project_name)
+            if communities:
+                querysets = querysets.filter(communities__icontains=communities)
+            if search_term:
+                querysets = querysets.filter(Q(project_name__icontains=search_term) | Q(project_description__icontains=search_term))
+
             paginator = Paginator(querysets, limit)
             records = paginator.get_page(page)
             

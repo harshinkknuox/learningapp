@@ -5,7 +5,7 @@ from wagtail.fields import StreamField
 from wagtail.admin.panels import FieldPanel
 from django.utils.translation import gettext_lazy as _
 from .blocks import ImageSliderBlock,LinkBlock,HomePageSharesListBlock,HomePagesectionsecondBlock,HomeSubjectSectionBlock
-
+from project.models import ProjectsPage
 class HomePage(Page):
     image_slider = StreamField(
         [('image_slider', ImageSliderBlock())], 
@@ -35,3 +35,11 @@ class HomePage(Page):
 
     def get_locale_display(self):
         return str(self.locale)
+    
+
+    def get_projects(self):
+        # Get the project index page
+        project_index = ProjectsPage.objects.all()  # Assuming there's only one projectIndexPage
+        if project_index:
+            return project_index # Get the latest 5 project posts
+        return project_index  # Return an empty queryset if no project index page exists
