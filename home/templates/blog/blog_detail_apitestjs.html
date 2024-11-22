@@ -1,0 +1,60 @@
+<script>
+    const BASE_URL = 'http://127.0.0.1:8000';
+
+    async function fetchProductDetails(productSlug) {
+        const productDetailElement = document.getElementById('product-info');
+        productDetailElement.textContent = 'Loading...';
+
+        try {
+            const url = `${BASE_URL}/api/v2/blog/blogs/${encodeURIComponent(productSlug)}/detail`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            const productDetailElement = document.getElementById('product-info');
+            const productImageElement = document.getElementById('product-image');
+            
+            productDetailElement.style.display = 'block';
+            console.log(data)
+            if (data.result == 'success' && data.records) {
+                const productRecord = data.records;
+                const mainName = productRecord.name || [];
+                const mainTitle = productRecord.title || [];
+                const maincategory = productRecord.category || [];
+                const mainpublishDate = productRecord.date || [];
+
+                {% comment %} const mainContent = productRecord.content[0] || []; {% endcomment %}
+                {% comment %} productDetailElement.innerHTML += '<p>'+mainTitle+'</p>'; {% endcomment %}
+
+                productDetailElement.innerHTML += '<p>'+mainName+'</p>';
+                productDetailElement.innerHTML += '<p>Category: '+maincategory+'</p>';
+                productDetailElement.innerHTML += '<p>Published on: '+mainpublishDate+'</p>';
+
+                {% comment %} productDetailElement.innerHTML += '<p>'+mainContent+'</p>'; {% endcomment %}
+
+                productRecord.content.forEach((item, index) => {
+                    productDetailElement.innerHTML += '<p>'+item.heading+'</p>';
+                    productDetailElement.innerHTML += '<p>'+item.content+'</p>';
+                })
+            } else {
+                productDetailElement.innerHTML += '<p>Product details not available.</p>';
+            }
+
+
+          
+        } catch (error) {
+            productDetailElement.textContent = 'Failed to load product details. Please try again later.';
+        }
+    }
+
+
+    function constructImageUrl(imageId) {
+        return `http://127.0.0.1:8000/media/original_images/${encodeURIComponent(imageId)}.jpg`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const pathname = window.location.pathname;
+        const segments = pathname.split('/');
+        const productSlug = segments[segments.length - 2];
+        fetchProductDetails(productSlug);
+    });
+</script>

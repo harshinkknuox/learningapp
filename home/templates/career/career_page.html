@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+<!-- load wagtailcore_tags by adding this: -->
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-homepage{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index_page.css' %}">
+{% endblock extra_css %}
+<!-- replace everything below with: -->
+{% block content %}
+    
+    {{ page.body }}
+
+    </ul> 
+{% endblock %}
+
+

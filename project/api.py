@@ -101,7 +101,6 @@ class ProjectsPagesViewSet(viewsets.ModelViewSet):
             
             # Serialize the retrieved ProjectPAge
             serializer = self.get_serializer(projects_page)
-            print("==--queryset-serializer--==",serializer.data)
             # Prepare the response data
             response['result'] = 'success'
             response['records'] = serializer.data

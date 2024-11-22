@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<h1 class="text-center">Blog Details</h1>
+
+<div class="row" id="product-detail">
+    <div id="product-info-start">
+    </div>
+    <div class="col-12 col-md-6" id="product-info">
+    </div>
+    
+</div>
+
+<script>
+    const BASE_URL = 'http://127.0.0.1:8000';
+
+    async function fetchProductDetails(productSlug) {
+        const productDetailStartElement = document.getElementById('product-info-start');
+        productDetailStartElement.textContent = 'Loading...';
+
+        try {
+            const url = `${BASE_URL}/api/v2/blog/blogs/${encodeURIComponent(productSlug)}/detail`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            const productDetailElement = document.getElementById('product-info');
+            const productImageElement = document.getElementById('product-image');
+            productDetailStartElement.style.display = 'none';
+            productDetailElement.style.display = 'block';
+            
+            if (data.result == 'success' && data.records) {
+                const productRecord = data.records;
+                const mainName = productRecord.name || [];
+                const mainTitle = productRecord.title || [];
+                const maincategory = productRecord.category || [];
+                const mainpublishDate = productRecord.date || [];
+                const blogImage = productRecord.image;
+                const blogimageHTML = document.createElement('img');
+
+                if (blogImage.url) {
+                    blogimageHTML.src = blogImage.url
+                } else {
+                    blogimageHTML.src = 'https://via.placeholder.com/300x150';
+                }
+                blogimageHTML.alt = 'Product Image';
+                blogimageHTML.className = 'product-image';
+                productDetailElement.appendChild(blogimageHTML);
+
+                {% comment %} const mainContent = productRecord.content[0] || []; {% endcomment %}
+                {% comment %} productDetailElement.innerHTML += '<p>'+mainTitle+'</p>'; {% endcomment %}
+                
+                productDetailElement.innerHTML += '<p>'+mainName+'</p>';
+                productDetailElement.innerHTML += '<p>Category: '+maincategory+'</p>';
+                productDetailElement.innerHTML += '<p>Published on: '+mainpublishDate+'</p>';
+
+                {% comment %} productDetailElement.innerHTML += '<p>'+mainContent+'</p>'; {% endcomment %}
+
+                productRecord.content.forEach((item, index) => {
+                    productDetailElement.innerHTML += '<p>'+item.heading+'</p>';
+                    productDetailElement.innerHTML += '<p>'+item.content+'</p>';
+                })
+            } else {
+                productDetailElement.innerHTML += '<p>Product details not available.</p>';
+            }
+        } catch (error) {
+            productDetailElement.textContent = 'Failed to load product details. Please try again later.';
+        }
+    }
+
+    function constructImageUrl(imageId) {
+        return `http://127.0.0.1:8000/media/original_images/${encodeURIComponent(imageId)}.jpg`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const pathname = window.location.pathname;
+        const segments = pathname.split('/');
+        const productSlug = segments[segments.length - 2];
+        fetchProductDetails(productSlug);
+    });
+</script>
+
+
+<style>
+body {
+font-family: Arial, sans-serif;
+line-height: 1.6;
+background-color: #f4f4f4;
+margin: 0;
+padding: 20px;
+}
+
+#product-detail {
+background: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.image-slider {
+position: relative;
+width: 100%;
+max-width: 600px; 
+margin: auto; 
+overflow: hidden; 
+border: 1px solid #ddd; 
+border-radius: 8px; 
+}
+
+.slide {
+display: none; 
+}
+
+img {
+width: 500px; 
+height: auto; 
+}
+
+button {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background-color: rgba(255, 255, 255, 0.8);
+border: 1px solid #ddd; 
+border-radius: 5px; 
+cursor: pointer;
+padding: 10px 15px; 
+font-size: 16px;
+z-index: 1; 
+}
+
+.prev {
+left: 10px;
+}
+
+.next {
+right: 10px; 
+}
+
+
+h4 {
+margin-top: 10px; 
+}
+
+ul {
+list-style-type: disc; 
+padding-left: 20px; 
+}
+
+ul li {
+margin-bottom: 5px; 
+}
+
+@media (max-width: 600px) {
+button {
+    padding: 8px 10px; 
+    font-size: 14px; 
+}
+}
+
+</style>
+
+{% endblock %}
