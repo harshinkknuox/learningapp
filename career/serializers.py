@@ -9,9 +9,10 @@ from wagtail.rich_text import RichText
 from bs4 import BeautifulSoup
 import base64
 from wagtail.models import Page
-
+from home.mixins import PageContentMixin
 
 class PageSerializer(serializers.Serializer):
+    slug = serializers.CharField(read_only=True)
     page_type = serializers.SerializerMethodField()
     class Meta:
         model = Page
@@ -19,6 +20,7 @@ class PageSerializer(serializers.Serializer):
     def get_page_type(self, obj):
         # import pdb; pdb.set_trace()
         return obj.specific._meta.model_name
+    
 
 class ImageTextCardBlockSerializer(serializers.Serializer):
     title = serializers.CharField(read_only=True)
@@ -90,24 +92,42 @@ class FAQBlockSerializer(serializers.Serializer):
         return str(soup)
     
 
-class BlogBlockSerializer(serializers.Serializer):
-    internal_page = PageSerializer(required=False)
+# class BlogBlockSerializer(serializers.Serializer):
+#     internal_page = PageSerializer(required=False)
 
-    def to_representation(self, instance):
-        # import pdb; pdb.set_trace()
-        data = super().to_representation(instance)
-        if instance.get('internal_page'):
-            if isinstance(instance['internal_page'], Page):
-                data['internal_page'] = PageSerializer(instance['internal_page']).data
-            else:
-                try:
-                    page = Page.objects.get(id=instance['internal_page'])
-                    data['internal_page'] = PageSerializer(page).data
-                except Page.DoesNotExist:
-                    data['internal_page'] = None
-        return data
+#     def to_representation(self, instance):
+#         # import pdb; pdb.set_trace()
+#         print("Instance Data:", instance)  # Debug
+#         data = super().to_representation(instance)
+#         if instance.get('internal_page'):
+#             if isinstance(instance['internal_page'], Page):
+#                 data['internal_page'] = PageSerializer(instance['internal_page']).data
+#             else:
+#                 try:
+#                     page = Page.objects.get(id=instance['internal_page'])
+#                     data['internal_page'] = PageSerializer(page).data
+#                 except Page.DoesNotExist:
+#                     data['internal_page'] = None
+#         return data
+
+
+class BlogBlockSerializer(serializers.Serializer):
+    blog_pages = serializers.SerializerMethodField()
+
+    def get_blog_pages(self, instance):
+        # Extract the ListValue containing the blog pages
+        blog_pages = instance.get('blog_pages')
+        if not blog_pages:
+            return []
+
+        # Serialize each page in the ListValue
+        return [
+            PageSerializer(page).data
+            for page in blog_pages
+            if isinstance(page, Page)  # Ensure it's a valid Page object
+        ]
     
-class CareerPageSerializer(serializers.Serializer):
+class CareerPageSerializer(serializers.Serializer,PageContentMixin):
     heading = serializers.CharField(read_only=True)
     subheading = serializers.CharField(read_only=True)
     content = serializers.SerializerMethodField()

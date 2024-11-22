@@ -31,6 +31,7 @@ urlpatterns = urlpatterns + [
     path('api/v2/project/', include('project.urls')),
     path('api/v2/course/', include('course.urls')),
     path('api/v2/blog/', include('blog.urls')),
+    path('api/v2/career/', include('career.urls')),
     path("", include(wagtail_urls)),
     # Alternatively, if you want Wagtail pages to be served from a subpath
     # of your site, rather than the site root:

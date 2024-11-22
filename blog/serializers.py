@@ -1,3 +1,4 @@
+import base64
 from rest_framework import serializers
 from wagtail.fields import StreamValue
 from .models import BlogPage
@@ -7,16 +8,15 @@ from learningapp.utils import get_image_rendition
 from wagtail.images.models import Image
 from wagtail.rich_text import RichText
 from bs4 import BeautifulSoup
-import base64
-from career.mixins import PageContentMixin
+from home.mixins import PageContentMixin
 
 
-class ContentBlockSerializer(serializers.Serializer):
+class BaseContentBlockSerializer(serializers.Serializer):
     heading = serializers.CharField(read_only=True)
     content = serializers.SerializerMethodField(read_only=True)
 
     def get_content(self, instance):
-        
+        # import pdb; pdb.set_trace()
         content =  instance['content']
         if not content:
             return None
@@ -47,31 +47,19 @@ class BlogPageSerializer(serializers.Serializer,PageContentMixin):
     
     slug = serializers.CharField(read_only=True)
     content = serializers.SerializerMethodField()
+    
+    def get_content(self, obj):
+        return super().get_content(obj)
+
     def get_image(self, obj):
         return obj.main_image_data
     
     def get_resized_image(self, obj):
         return obj.resized_image_data
     
-    def get_content(self, obj):
-        content_blocks = []
-        
-        for block in obj.content:
-            datas = None
-            if block.block_type == 'content_block':
-                serializer = ContentBlockSerializer(block.value, context=self.context)
-                content_blocks.append(serializer.data)
-        return content_blocks
     
 class BlogDetailSerializer(BlogPageSerializer):
     content = serializers.SerializerMethodField()
 
     def get_content(self, obj):
-        content_blocks = []
-        
-        for block in obj.content:
-            datas = None
-            if block.block_type == 'content_block':
-                serializer = ContentBlockSerializer(block.value, context=self.context)
-                content_blocks.append(serializer.data)
-        return content_blocks
+        return super().get_content(obj)
